@@ -1,0 +1,29 @@
+[Config file]: config_files/0.json
+[Unhandled Error] TimeoutError('Timeout 30000ms exceeded.\n=========================== logs ===========================\nnavigating to "http://ec2-3-151-10-235.us-east-2.compute.amazonaws.com:3000/", waiting until "load"\n============================================================')
+Traceback (most recent call last):
+  File "C:\Users\User\Documents\Github\webarena\react.py", line 219, in test_react
+    obs, info = env.reset(options={"config_file": config_file})
+  File "<@beartype(browser_env.envs.ScriptBrowserEnv.reset) at 0x16f2f8f1ab0>", line 51, in reset
+  File "C:\Users\User\Documents\Github\webarena\browser_env\envs.py", line 203, in reset
+    self.setup(config_file=config_file)
+  File "<@beartype(browser_env.envs.ScriptBrowserEnv.setup) at 0x16f2f8f17e0>", line 36, in setup
+  File "C:\Users\User\Documents\Github\webarena\browser_env\envs.py", line 160, in setup
+    page.goto(url)
+  File "C:\Users\User\anaconda3\envs\webarena\lib\site-packages\playwright\sync_api\_generated.py", line 9221, in goto
+    self._sync(
+  File "C:\Users\User\anaconda3\envs\webarena\lib\site-packages\playwright\_impl\_sync_base.py", line 104, in _sync
+    return task.result()
+  File "C:\Users\User\anaconda3\envs\webarena\lib\site-packages\playwright\_impl\_page.py", line 495, in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+  File "C:\Users\User\anaconda3\envs\webarena\lib\site-packages\playwright\_impl\_frame.py", line 147, in goto
+    await self._channel.send("goto", locals_to_params(locals()))
+  File "C:\Users\User\anaconda3\envs\webarena\lib\site-packages\playwright\_impl\_connection.py", line 61, in send
+    return await self._connection.wrap_api_call(
+  File "C:\Users\User\anaconda3\envs\webarena\lib\site-packages\playwright\_impl\_connection.py", line 461, in wrap_api_call
+    return await cb()
+  File "C:\Users\User\anaconda3\envs\webarena\lib\site-packages\playwright\_impl\_connection.py", line 96, in inner_send
+    result = next(iter(done)).result()
+playwright._impl._api_types.TimeoutError: Timeout 30000ms exceeded.
+=========================== logs ===========================
+navigating to "http://ec2-3-151-10-235.us-east-2.compute.amazonaws.com:3000/", waiting until "load"
+============================================================

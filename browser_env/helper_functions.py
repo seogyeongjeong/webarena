@@ -116,7 +116,7 @@ class RenderHelper(object):
     def __init__(
         self, config_file: str, result_dir: str, action_set_tag: str
     ) -> None:
-        with open(config_file, "r") as f:
+        with open(config_file, "r", encoding="utf-8") as f:
             _config = json.load(f)
             _config_str = ""
             for k, v in _config.items():
@@ -127,7 +127,7 @@ class RenderHelper(object):
         self.action_set_tag = action_set_tag
 
         self.render_file = open(
-            Path(result_dir) / f"render_{task_id}.html", "a+"
+            Path(result_dir) / f"render_{task_id}.html", "a+", encoding="utf-8"
         )
         self.render_file.truncate(0)
         # write init template
