@@ -7,6 +7,7 @@ from browser_env.env_config import *
 
 def main() -> None:
     with open("config_files/test.raw.json", "r", encoding="utf-8") as f:
+        # test.raw.json is modified from the original version.
         raw = f.read()
     raw = raw.replace("__GITLAB__", GITLAB)
     raw = raw.replace("__REDDIT__", REDDIT)
@@ -14,11 +15,13 @@ def main() -> None:
     raw = raw.replace("__SHOPPING_ADMIN__", SHOPPING_ADMIN)
     raw = raw.replace("__WIKIPEDIA__", WIKIPEDIA)
     raw = raw.replace("__MAP__", MAP)
+    # Modified from the original version.
     with open("config_files/test.json", "w", encoding="utf-8") as f:
         f.write(raw)
     # split to multiple files
     data = json.loads(raw)
     for idx, item in enumerate(data):
+        # Modified from the original version.
         with open(f"config_files/{idx}.json", "w", encoding="utf-8") as f:
             json.dump(item, f, indent=2, ensure_ascii=False)
 

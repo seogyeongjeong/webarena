@@ -271,6 +271,8 @@ def test(
                     assert os.path.exists(_c["storage_state"])
                     # update the config file
                     config_file = f"{temp_dir}/{os.path.basename(config_file)}"
+
+                    # Modified from the original version.
                     with open(config_file, "w", encoding="utf-8") as f:
                         json.dump(_c, f)
 
@@ -354,6 +356,7 @@ def test(
             import traceback
 
             # write to error file
+            # Modified from the original version.
             with open(Path(args.result_dir) / "error.txt", "a", encoding="utf-8") as f:
                 f.write(f"[Config file]: {config_file}\n")
                 f.write(f"[Unhandled Error] {repr(e)}\n")
@@ -386,6 +389,7 @@ def prepare(args: argparse.Namespace) -> None:
         (Path(result_dir) / "traces").mkdir(parents=True)
 
     # log the log file
+    # Modified from the original version.
     with open(os.path.join(result_dir, "log_files.txt"), "a+", encoding="utf-8") as f:
         f.write(f"{LOG_FILE_NAME}\n")
 
@@ -406,6 +410,7 @@ def get_unfinished(config_files: list[str], result_dir: str) -> list[str]:
 def dump_config(args: argparse.Namespace) -> None:
     config_file = Path(args.result_dir) / "config.json"
     if not config_file.exists():
+        # Modified from the original version.
         with open(config_file, "w", encoding="utf-8") as f:
             json.dump(vars(args), f, indent=4)
             logger.info(f"Dump config to {config_file}")
