@@ -7,7 +7,9 @@ from typing import Any
 
 from PIL import Image
 
-from agent.prompts import *
+# Modified from the original version.
+from webarena_agent.prompts import *
+
 from browser_env import (
     Action,
     ActionTypes,

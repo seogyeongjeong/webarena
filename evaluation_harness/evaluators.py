@@ -1,13 +1,16 @@
 """base class for evaluation"""
+# Modified from the original version to use the original provider system instead of webarena's LLM module
 # answer string match
 import collections
 import html
 import importlib
 import json
+import os
+import sys
 import time
 import urllib
 from pathlib import Path
-from typing import Any, Tuple, Union
+from typing import Any, Tuple, Union, Optional, Dict
 
 from beartype import beartype
 from nltk.tokenize import word_tokenize
@@ -15,7 +18,14 @@ from playwright.sync_api import CDPSession, Page
 
 from browser_env.actions import Action
 from browser_env.utils import StateInfo
-from evaluation_harness.helper_functions import (
+
+# Modified from the original version: Import from our new helper functions that use original provider system
+# Add src to path to import our helper functions
+src_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "src")
+if src_dir not in sys.path:
+    sys.path.insert(0, src_dir)
+
+from utils.webarena_evaluation_helper_functions import (
     PseudoPage,
     gitlab_get_project_memeber_role,
     llm_fuzzy_match,
@@ -30,8 +40,11 @@ Trajectory = list[Union[Action, StateInfo]]
 
 
 class Evaluator(object):
-    def __init__(self, eval_tag: str = "") -> None:
+    # Modified from the original version: Added providers parameter
+    def __init__(self, eval_tag: str = "", providers: Optional[Dict[str, Any]] = None, model_config: Optional[Dict[str, Any]] = None) -> None:
         self.eval_tag = eval_tag
+        self.providers = providers
+        self.model_config = model_config
 
     @beartype
     def __call__(
@@ -110,15 +123,21 @@ class StringEvaluator(Evaluator):
         else:
             return float(clean_ref in clean_pred)
 
-    @staticmethod
+    # Modified from the original version: Now instance methods that use providers
     @beartype
-    def fuzzy_match(ref: str, pred: str, intent: str) -> float:
-        return llm_fuzzy_match(pred, ref, intent)
+    def fuzzy_match(self, ref: str, pred: str, intent: str) -> float:
+        if self.providers is None:
+            raise ValueError("Providers must be set to use fuzzy_match. Pass providers to evaluator_router.")
+        # Note: llm_fuzzy_match expects (pred, reference, question, providers, model_config)
+        return llm_fuzzy_match(pred, ref, intent, self.providers, self.model_config)
 
-    @staticmethod
     @beartype
-    def ua_match(ref: str, pred: str, intent: str) -> float:
-        return llm_ua_match(pred, ref, intent)
+    def ua_match(self, ref: str, pred: str, intent: str) -> float:
+        if self.providers is None:
+            raise ValueError("Providers must be set to use ua_match. Pass providers to evaluator_router.")
+        # Note: llm_ua_match expects (pred, reference, question, providers, model_config)
+        # But evaluator calls with (intent, ref, pred), so we need to reorder
+        return llm_ua_match(pred, ref, intent, self.providers, self.model_config)
 
     def __call__(
         self,
@@ -352,9 +371,16 @@ class EvaluatorComb:
         return score
 
 
+# Modified from the original version: Added providers and model_config parameters
 @beartype
-def evaluator_router(config_file: Path | str) -> EvaluatorComb:
-    """Router to get the evaluator class"""
+def evaluator_router(config_file: Path | str, providers: Optional[Dict[str, Any]] = None, model_config: Optional[Dict[str, Any]] = None) -> EvaluatorComb:
+    """Router to get the evaluator class
+    
+    Args:
+        config_file: Path to the config file
+        providers: Dictionary of providers from config['real_providers'] (required for fuzzy_match and ua_match)
+        model_config: Optional model config for LLM evaluation calls
+    """
     with open(config_file, "r") as f:
         configs = json.load(f)
 
@@ -363,11 +389,11 @@ def evaluator_router(config_file: Path | str) -> EvaluatorComb:
     for eval_type in eval_types:
         match eval_type:
             case "string_match":
-                evaluators.append(StringEvaluator())
+                evaluators.append(StringEvaluator(providers=providers, model_config=model_config))
             case "url_match":
-                evaluators.append(URLEvaluator())
+                evaluators.append(URLEvaluator(providers=providers, model_config=model_config))
             case "program_html":
-                evaluators.append(HTMLContentEvaluator())
+                evaluators.append(HTMLContentEvaluator(providers=providers, model_config=model_config))
             case _:
                 raise ValueError(f"eval_type {eval_type} is not supported")
 

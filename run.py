@@ -12,13 +12,13 @@ from pathlib import Path
 
 import openai
 
-from agent import (
+from webarena_agent import (
     Agent,
     PromptAgent,
     TeacherForcingAgent,
     construct_agent,
 )
-from agent.prompts import *
+from webarena_agent.prompts import *
 from browser_env import (
     Action,
     ActionTypes,
@@ -370,7 +370,7 @@ def test(
 
 def prepare(args: argparse.Namespace) -> None:
     # convert prompt python files to json
-    from agent.prompts import to_json
+    from webarena_agent.prompts import to_json
 
     to_json.run()
 

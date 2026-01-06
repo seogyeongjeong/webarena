@@ -2,7 +2,7 @@
 
 result_dir="cache/919_gpt35_16k_cot_na"
 model="gpt-3.5-turbo-16k-0613"
-instruction_path="agent/prompts/jsons/p_cot_id_actree_2s.json"
+instruction_path="webarena_agent/prompts/jsons/p_cot_id_actree_2s.json"
 
 SERVER=""
 OPENAI_API_KEY=""

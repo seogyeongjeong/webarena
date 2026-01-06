@@ -144,7 +144,7 @@ render_cache/*
 cache/*
 
 # TMP IGNORE
-agent/prompts/jsons/*
+webarena_agent/prompts/jsons/*
 log_files/
 config_files*/*0.json
 config_files*/*1.json

@@ -21,8 +21,8 @@ import tempfile
 import time
 from pathlib import Path
 
-from agent import construct_agent, PromptAgent
-from agent.prompts import *
+from webarena_agent import construct_agent, PromptAgent
+from webarena_agent.prompts import *
 from browser_env import (
     Action,
     ActionTypes,
